@@ -67,7 +67,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1signature_1size(_: JNIEnv,
 pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g1_1key(env: JNIEnv, _: JObject, seed: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
-        Err(_) => return 0,
+        Err(_) => return 1,
         Ok(s) => ikm = s,
     };
     let s = if ikm.is_empty() { None } else { Some(ikm) };
@@ -76,7 +76,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g1_1key(env: JNIEnv, _:
     let sk: Vec<i8> = sk_bytes.iter().map(|b| *b as jbyte).collect();
     copy_to_jni!(env, public_key, pk.as_slice());
     copy_to_jni!(env, secret_key, sk.as_slice());
-    1
+    0
 }
 
 #[allow(non_snake_case)]
@@ -84,7 +84,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g1_1key(env: JNIEnv, _:
 pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g2_1key(env: JNIEnv, _: JObject, seed: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
-        Err(_) => return 0,
+        Err(_) => return 1,
         Ok(s) => ikm = s,
     };
     let s = if ikm.is_empty() { None } else { Some(ikm) };
@@ -93,7 +93,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g2_1key(env: JNIEnv, _:
     let sk: Vec<i8> = sk_bytes.iter().map(|b| *b as jbyte).collect();
     copy_to_jni!(env, public_key, pk.as_slice());
     copy_to_jni!(env, secret_key, sk.as_slice());
-    1
+    0
 }
 
 #[allow(non_snake_case)]
@@ -101,7 +101,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g2_1key(env: JNIEnv, _:
 pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g1_1key(env: JNIEnv, _: JObject, seed: jbyteArray, bf: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
-        Err(_) => return 0,
+        Err(_) => return 1,
         Ok(s) => ikm = s,
     };
     let s = if ikm.is_empty() { None } else { Some(ikm) };
@@ -112,7 +112,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g1_1key(env: J
     copy_to_jni!(env, public_key, pk.as_slice());
     copy_to_jni!(env, secret_key, sk.as_slice());
     copy_to_jni!(env, bf, r.as_slice());
-    1
+    0
 }
 
 #[allow(non_snake_case)]
@@ -120,7 +120,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g1_1key(env: J
 pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g2_1key(env: JNIEnv, _: JObject, seed: jbyteArray, bf: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
-        Err(_) => return 0,
+        Err(_) => return 1,
         Ok(s) => ikm = s,
     };
     let s = if ikm.is_empty() { None } else { Some(ikm) };
@@ -131,7 +131,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g2_1key(env: J
     copy_to_jni!(env, public_key, pk.as_slice());
     copy_to_jni!(env, secret_key, sk.as_slice());
     copy_to_jni!(env, bf, r.as_slice());
-    1
+    0
 }
 
 #[allow(non_snake_case)]
@@ -209,10 +209,10 @@ pub extern "C" fn Java_Bbs_bbs_1sign_1init(_: JNIEnv, _: JObject) -> jlong {
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1sign_1set_1secret_1key(env: JNIEnv, _: JObject, handle: jlong, secret_key: jbyteArray) -> jint {
     match env.convert_byte_array(secret_key) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() != FR_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -226,10 +226,10 @@ pub extern "C" fn Java_Bbs_bbs_1sign_1set_1secret_1key(env: JNIEnv, _: JObject, 
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1sign_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
     match env.convert_byte_array(public_key) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() < G2_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -243,7 +243,7 @@ pub extern "C" fn Java_Bbs_bbs_1sign_1set_1public_1key(env: JNIEnv, _: JObject, 
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1sign_1add_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray) -> jint {
     match env.convert_byte_array(message) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
@@ -256,7 +256,7 @@ pub extern "C" fn Java_Bbs_bbs_1sign_1add_1message_1bytes(env: JNIEnv, _: JObjec
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1sign_1add_1message_1prehashed(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray) -> jint {
     match env.convert_byte_array(message) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
@@ -271,12 +271,12 @@ pub extern "C" fn Java_Bbs_bbs_1sign_1finish(env: JNIEnv, _: JObject, handle: jl
     let mut error = ExternError::success();
     let mut sig = ByteBuffer::from_vec(vec![]);
     let result = bbs_sign_context_finish(handle as u64, &mut sig, &mut error);
-    if result == 0 {
+    if result != 0 {
         return result;
     }
-    let sig: Vec<i8> = sig.into_vec().iter().map(|b| *b as jbyte).collect();
+    let sig: Vec<i8> = sig.destroy_into_vec().iter().map(|b| *b as jbyte).collect();
     copy_to_jni!(env, signature, sig.as_slice());
-    1
+    0
 }
 
 #[allow(non_snake_case)]
@@ -290,7 +290,7 @@ pub extern "C" fn Java_Bbs_bbs_1verify_1init(_: JNIEnv, _: JObject) -> jlong {
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1verify_1add_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray) -> jint {
     match env.convert_byte_array(message) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
@@ -303,7 +303,7 @@ pub extern "C" fn Java_Bbs_bbs_1verify_1add_1message_1bytes(env: JNIEnv, _: JObj
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1verify_1add_1message_1prehashed(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray) -> jint {
     match env.convert_byte_array(message) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
@@ -316,10 +316,10 @@ pub extern "C" fn Java_Bbs_bbs_1verify_1add_1message_1prehashed(env: JNIEnv, _: 
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1verify_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
     match env.convert_byte_array(public_key) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() < G2_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -333,10 +333,10 @@ pub extern "C" fn Java_Bbs_bbs_1verify_1set_1public_1key(env: JNIEnv, _: JObject
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1verify_1set_1signature(env: JNIEnv, _: JObject, handle: jlong, signature: jbyteArray) -> jint {
     match env.convert_byte_array(signature) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() < G1_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -364,7 +364,7 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1commitment_1init(_: JNIEnv, _: JObject) -
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1blind_1commitment_1add_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, index: jint, message: jbyteArray) -> jint {
     match env.convert_byte_array(message) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
@@ -377,7 +377,7 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1commitment_1add_1message_1bytes(env: JNIE
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1blind_1commitment_1add_1prehashed(env: JNIEnv, _: JObject, handle: jlong, index: jint, message: jbyteArray) -> jint {
     match env.convert_byte_array(message) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
@@ -390,10 +390,10 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1commitment_1add_1prehashed(env: JNIEnv, _
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1blind_1commitment_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
     match env.convert_byte_array(public_key) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() < G2_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -407,10 +407,10 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1commitment_1set_1public_1key(env: JNIEnv,
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1blind_1commitment_1set_1nonce_1bytes(env: JNIEnv, _: JObject, handle: jlong, nonce: jbyteArray) -> jint {
     match env.convert_byte_array(nonce) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() < G2_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -435,11 +435,11 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1commitment_1finish(env: JNIEnv, _: JObjec
     if res == 0 {
         return bad_res;
     }
-    let cc: Vec<jbyte> = c.into_vec().iter().map(|b| *b as jbyte).collect();
+    let cc: Vec<jbyte> = c.destroy_into_vec().iter().map(|b| *b as jbyte).collect();
     copy_to_jni!(env, commitment, cc.as_slice(), bad_res);
-    let rr: Vec<jbyte> = r.into_vec().iter().map(|b| *b as jbyte).collect();
+    let rr: Vec<jbyte> = r.destroy_into_vec().iter().map(|b| *b as jbyte).collect();
     copy_to_jni!(env, blinding_factor, rr.as_slice(), bad_res);
-    let pp: Vec<jbyte> = p.into_vec().iter().map(|b| *b as jbyte).collect();
+    let pp: Vec<jbyte> = p.destroy_into_vec().iter().map(|b| *b as jbyte).collect();
 
     match env.new_byte_array(pp.len() as jint) {
         Err(_) => env.new_byte_array(0).unwrap(),
@@ -461,10 +461,10 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1init(_: JNIEnv, _: JObject) -> jlon
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1set_1secret_1key(env: JNIEnv, _: JObject, handle: jlong, secret_key: jbyteArray) -> jint {
     match env.convert_byte_array(secret_key) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() != FR_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -478,10 +478,10 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1set_1secret_1key(env: JNIEnv, _: JO
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
     match env.convert_byte_array(public_key) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() < G2_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -495,10 +495,10 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1set_1public_1key(env: JNIEnv, _: JO
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1set_1commitment(env: JNIEnv, _: JObject, handle: jlong, commitment: jbyteArray) -> jint {
     match env.convert_byte_array(commitment) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() != FR_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -512,7 +512,7 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1set_1commitment(env: JNIEnv, _: JOb
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1add_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, index: jint, message: jbyteArray) -> jint {
     match env.convert_byte_array(message) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
@@ -525,7 +525,7 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1add_1message_1bytes(env: JNIEnv, _:
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1add_1prehashed(env: JNIEnv, _: JObject, handle: jlong, index: jint, hash: jbyteArray) -> jint {
     match env.convert_byte_array(hash) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
@@ -540,12 +540,12 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1finish(env: JNIEnv, _: JObject, han
     let mut err = ExternError::success();
     let mut s = ByteBuffer::from_vec(vec![]);
     let res = bbs_blind_sign_context_finish(handle as u64, &mut s, &mut err);
-    if res == 0 {
+    if res != 0 {
         return res;
     }
-    let ss: Vec<jbyte> = s.into_vec().iter().map(|b| *b as jbyte).collect();
+    let ss: Vec<jbyte> = s.destroy_into_vec().iter().map(|b| *b as jbyte).collect();
     copy_to_jni!(env, signature, ss.as_slice());
-    1
+    0
 }
 
 #[allow(non_snake_case)]
@@ -558,23 +558,23 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1unblind_1signature(env: JNIEnv,
     let mut err = ExternError::success();
     let bs;
     match env.convert_byte_array(blind_signature) {
-        Err(_) => return 0,
+        Err(_) => return 1,
         Ok(s) => bs = s,
     };
     let bf;
     match env.convert_byte_array(blinding_factor) {
-        Err(_) => return 0,
+        Err(_) => return 1,
         Ok(s) => bf = s,
     };
 
     let mut signature = ByteBuffer::default();
     let res = bbs_unblind_signature(ByteArray::from(bs), ByteArray::from(bf), &mut signature, &mut err);
-    if res == 0 {
+    if res != 0 {
         return res;
     }
-    let signature: Vec<jbyte> = signature.into_vec().iter().map(|b| *b as jbyte).collect();
+    let signature: Vec<jbyte> = signature.destroy_into_vec().iter().map(|b| *b as jbyte).collect();
     copy_to_jni!(env, unblind_signature, signature.as_slice());
-    1
+    0
 }
 
 #[allow(non_snake_case)]
@@ -588,10 +588,10 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1init(_: J
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
     match env.convert_byte_array(public_key) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() < G2_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -605,10 +605,10 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1publ
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1signature(env: JNIEnv, _: JObject, handle: jlong, signature: jbyteArray) -> jint {
     match env.convert_byte_array(signature) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() < SIGNATURE_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -622,10 +622,10 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1sign
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1nonce_1bytes(env: JNIEnv, _: JObject, handle: jlong, nonce: jbyteArray) -> jint {
     match env.convert_byte_array(nonce) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             if s.len() < G2_COMPRESSED_SIZE {
-                0
+                2
             } else {
                 let mut error = ExternError::success();
                 let byte_array = ByteArray::from(s);
@@ -639,7 +639,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1nonc
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proof_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray, xtype: jint, blinding_factor: jbyteArray) -> jint {
     match env.convert_byte_array(message) {
-        Err(_) => 0,
+        Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
@@ -656,7 +656,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proo
                     };
                     ProofMessageType::HiddenExternalBlinding
                 },
-                _ => return 0
+                _ => return 2
             };
             bbs_create_proof_context_add_proof_message_bytes(handle as u64, byte_array, proof_msg_type, bf_byte_array, &mut error)
         }
@@ -670,10 +670,10 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish(en
     let mut error = ExternError::success();
     let mut p = ByteBuffer::from_vec(vec![]);
     let res = bbs_create_proof_context_finish(handle as u64, &mut p, &mut error);
-    if res == 0 {
+    if res != 0 {
         return bad_res;
     }
-    let pp: Vec<jbyte> = p.into_vec().iter().map(|b| *b as jbyte).collect();
+    let pp: Vec<jbyte> = p.destroy_into_vec().iter().map(|b| *b as jbyte).collect();
     match env.new_byte_array(pp.len() as jint) {
         Err(_) => env.new_byte_array(0).unwrap(),
         Ok(out) => {
