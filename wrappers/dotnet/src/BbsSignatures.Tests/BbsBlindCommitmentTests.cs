@@ -29,7 +29,7 @@ namespace BbsSignatures.Tests
             var commitment = Service.CreateBlindedCommitment(new CreateBlindedCommitmentRequest(
                 publicKey: publicKey,
                 messages: new[] { new IndexedMessage { Index = 0, Message = "message_0" } },
-                nonce: "123"));
+                nonce: new byte[] { 1, 2, 3 }));
 
             Assert.NotNull(commitment);
             Assert.NotNull(commitment.BlindingFactor);

@@ -152,7 +152,7 @@ namespace BbsSignatures
                 context.ThrowOnError(error);
             }
 
-            NativeMethods.bbs_blind_commitment_context_set_nonce_string(handle, request.Nonce, out error);
+            NativeMethods.bbs_blind_commitment_context_set_nonce_bytes(handle, context.ToBuffer(request.Nonce), out error);
             context.ThrowOnError(error);
 
             NativeMethods.bbs_blind_commitment_context_set_public_key(handle, context.ToBuffer(request.Key), out error);
@@ -176,7 +176,7 @@ namespace BbsSignatures
             var handle = NativeMethods.bbs_verify_blind_commitment_context_init(out var error);
             context.ThrowOnError(error);
 
-            NativeMethods.bbs_verify_blind_commitment_context_set_nonce_string(handle, request.Nonce, out error);
+            NativeMethods.bbs_verify_blind_commitment_context_set_nonce_bytes(handle, context.ToBuffer(request.Nonce), out error);
             context.ThrowOnError(error);
 
             NativeMethods.bbs_verify_blind_commitment_context_set_proof(handle, context.ToBuffer(request.Proof), out error);
@@ -217,7 +217,7 @@ namespace BbsSignatures
                 context.ThrowOnError(error);
             }
 
-            NativeMethods.bbs_create_proof_context_set_nonce_string(handle, proofRequest.Nonce, out error);
+            NativeMethods.bbs_create_proof_context_set_nonce_bytes(handle, context.ToBuffer(proofRequest.Nonce), out error);
             context.ThrowOnError(error);
 
             NativeMethods.bbs_create_proof_context_set_public_key(handle, context.ToBuffer(proofRequest.Key), out error);
@@ -248,7 +248,7 @@ namespace BbsSignatures
             NativeMethods.bbs_verify_proof_context_set_public_key(handle, context.ToBuffer(request.Key), out error);
             context.ThrowOnError(error);
 
-            NativeMethods.bbs_verify_proof_context_set_nonce_string(handle, request.Nonce, out error);
+            NativeMethods.bbs_verify_proof_context_set_nonce_bytes(handle, context.ToBuffer(request.Nonce), out error);
             context.ThrowOnError(error);
 
             NativeMethods.bbs_verify_proof_context_set_proof(handle, context.ToBuffer(request.Proof), out error);

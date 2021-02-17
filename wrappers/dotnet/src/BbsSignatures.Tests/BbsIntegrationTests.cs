@@ -18,7 +18,7 @@ namespace BbsSignatures.Tests
             var key = BlsKeyPair.GenerateG2();
             var publicKey = key.GetBbsKey(5);
 
-            var nonce = "123";
+            var nonce = new byte[] { 1, 2, 3 };
             var messages = new[]
             {
                 "message_1",
@@ -44,17 +44,18 @@ namespace BbsSignatures.Tests
                 var proofMessages1 = new[]
                 {
                     new ProofMessage { Message = messages[0], ProofType = ProofMessageType.Revealed },
-                    new ProofMessage { Message = messages[1], ProofType = ProofMessageType.Revealed },
+                    new ProofMessage { Message = messages[1], ProofType = ProofMessageType.HiddenProofSpecificBlinding },
                     new ProofMessage { Message = messages[2], ProofType = ProofMessageType.Revealed },
                     new ProofMessage { Message = messages[3], ProofType = ProofMessageType.Revealed },
-                    new ProofMessage { Message = messages[4], ProofType = ProofMessageType.Revealed }
+                    new ProofMessage { Message = messages[4], ProofType = ProofMessageType.HiddenProofSpecificBlinding }
                 };
+
                 var proofResult = Service.CreateProof(new CreateProofRequest(publicKey, proofMessages1, signature, null, nonce));
 
                 Assert.NotNull(proofResult);
 
                 // Verify proof of revealed messages
-                var verifyResult1 = Service.VerifyProof(new VerifyProofRequest(publicKey, proofResult, messages, nonce));
+                var verifyResult1 = Service.VerifyProof(new VerifyProofRequest(publicKey, proofResult, proofMessages1.Where(x => x.ProofType == ProofMessageType.Revealed).Select(x => x.Message).ToArray(), nonce));
 
                 Assert.IsTrue(verifyResult1);
             }

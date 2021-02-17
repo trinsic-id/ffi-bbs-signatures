@@ -23,7 +23,7 @@ namespace BbsSignatures
         /// or
         /// nonce
         /// </exception>
-        public VerifyBlindedCommitmentRequest(BbsKey publicKey, byte[] proof, uint[] blindedIndices, string nonce)
+        public VerifyBlindedCommitmentRequest(BbsKey publicKey, byte[] proof, uint[] blindedIndices, byte[] nonce)
         {
             Key = publicKey ?? throw new ArgumentNullException(nameof(publicKey));
             Proof = proof ?? throw new ArgumentNullException(nameof(proof));
@@ -61,6 +61,6 @@ namespace BbsSignatures
         /// <value>
         /// The nonce.
         /// </value>
-        public string Nonce { get; set; }
+        public byte[] Nonce { get; set; }
     }
 }

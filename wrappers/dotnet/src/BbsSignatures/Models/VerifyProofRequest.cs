@@ -22,7 +22,7 @@ namespace BbsSignatures
         /// or
         /// publicKey
         /// </exception>
-        public VerifyProofRequest(BbsKey publicKey, byte[] proof, string[] messages, string nonce)
+        public VerifyProofRequest(BbsKey publicKey, byte[] proof, string[] messages, byte[] nonce)
         {
             Proof = proof ?? throw new ArgumentNullException(nameof(proof));
             Messages = messages ?? throw new ArgumentNullException(nameof(messages));
@@ -52,7 +52,7 @@ namespace BbsSignatures
         /// <value>
         /// The nonce.
         /// </value>
-        public string Nonce { get; set; }
+        public byte[] Nonce { get; set; }
 
         /// <summary>
         /// Gets or sets the BBS+ key.

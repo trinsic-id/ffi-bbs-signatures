@@ -20,7 +20,7 @@ namespace BbsSignatures
         /// or
         /// nonce
         /// </exception>
-        public CreateBlindedCommitmentRequest(BbsKey publicKey, IndexedMessage[] messages, string nonce)
+        public CreateBlindedCommitmentRequest(BbsKey publicKey, IndexedMessage[] messages, byte[] nonce)
         {
             Key = publicKey ?? throw new ArgumentNullException(nameof(publicKey));
             Messages = messages ?? throw new ArgumentNullException(nameof(messages));
@@ -40,6 +40,6 @@ namespace BbsSignatures
         /// <summary>
         /// A nonce for the resulting proof
         /// </summary>
-        public string Nonce { get; set; }
+        public byte[] Nonce { get; set; }
     }
 }

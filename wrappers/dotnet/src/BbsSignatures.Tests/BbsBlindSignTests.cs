@@ -24,7 +24,7 @@ namespace BbsSignatures.Tests
                 new IndexedMessage { Index = 0, Message = "message_0" },
                 new IndexedMessage { Index = 1, Message = "message_1" }
             };
-            var nonce = "123";
+            var nonce = new byte[] { 1, 2, 3 };
 
             var commitment = Service.CreateBlindedCommitment(new CreateBlindedCommitmentRequest(publicKey, messages, nonce));
 
@@ -44,7 +44,7 @@ namespace BbsSignatures.Tests
                 new IndexedMessage { Index = 0, Message = "message_0" },
                 new IndexedMessage { Index = 1, Message = "message_1" }
             };
-            var nonce = "123";
+            var nonce = new byte[] { 1, 2, 3 };
 
             var commitment = Service.CreateBlindedCommitment(new CreateBlindedCommitmentRequest(publicKey, messages, nonce));
 
